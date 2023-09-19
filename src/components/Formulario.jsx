@@ -2,8 +2,7 @@ import { Fragment } from "react"
 import { MARCAS, YEARS, PLANES } from "../constants"
 import useCotizador from "../hooks/useCotizador"
 
-
-//prueba para branches
+///test numero 2
 export const Formulario = () => {
   
   return (
