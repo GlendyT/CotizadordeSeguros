@@ -1,5 +1,9 @@
 import { Children, createContext, useState } from "react"; 
-import { obtenerDiferenciaYear } from "../helpers";
+import { 
+    obtenerDiferenciaYear, 
+    calcularMarca, 
+    calcularPlan,
+    formatearDinero } from "../helpers";
 
 const CotizadorContext = createContext()
 
@@ -11,6 +15,8 @@ const CotizadorProvider = ({children}) => {
         plan: ""
     })
     const [error, setError] = useState("")
+    const [resultado, setResultado] = useState(0)
+    const [cargando, setCargando] = useState(false)
 
     const handleChangeDatos = e => { 
         setDatos({ 
@@ -26,19 +32,25 @@ const CotizadorProvider = ({children}) => {
        //Obtener diferencia de años
        const diferencia = obtenerDiferenciaYear(datos.year)
 
-       console.log(diferencia)
-
        //Hay que restar el 3% por cada año
        resultado -= ((diferencia * 3) * resultado) / 100
-
-       console.log(resultado)
-
        //Americando 15%
        //Europeo 30%
        //Asiatico 5%
-
+       resultado *= calcularMarca(datos.marca)
        //Basico 20%
        //Completo 50%
+       resultado *= calcularPlan (datos.plan)
+    
+       //Formatear Dinero
+       resultado = formatearDinero(resultado)
+       
+       setCargando(true)
+
+       setTimeout(() => {
+        setResultado(resultado)
+        setCargando(false)
+       }, 2000);
     }
 
     return ( 
@@ -48,7 +60,9 @@ const CotizadorProvider = ({children}) => {
                 handleChangeDatos,
                 error, 
                 setError,
-                cotizarSeguro
+                cotizarSeguro,
+                resultado,
+                cargando
             }}
         >
             {children}
